@@ -3,14 +3,22 @@ angular.module('App', [])
 	$scope.accounts = [];
 
 	$scope.addAccount = function(){
-		//すでに存在するものは追加しない
+		var newAccount = {
+			'account': $scope.newAccount,
+			'username': $scope.newUsername,
+			'password': $scope.newPassword
+		};
+		var accounts = $filter('filter')($scope.accounts, function (account) {
+	    return account.account == newAccount.account && account.username == newAccount.username;
+	  });
+
+	  if(accounts && accounts.length > 0){
+	  	alert('This account has registed');
+	  	return;
+	  }
 		chrome.storage.local.get("accounts", function(result){
 			var accounts = result.accounts || [];
-			accounts.push({
-				'account': $scope.newAccount,
-				'username': $scope.newUsername,
-				'password': $scope.newPassword
-			});
+			accounts.push(newAccount);
 
 			$scope.saveAccount(accounts);
 		});
@@ -31,7 +39,7 @@ angular.module('App', [])
 	}
 
 	$scope.removeAccount = function(targetAccount){
-		accounts = $filter('filter')($scope.accounts, function (account) {
+		var accounts = $filter('filter')($scope.accounts, function (account) {
 	    return account !== targetAccount;
 	  });
 		$scope.saveAccount(accounts);
