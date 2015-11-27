@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+	<style type="text/css">
+	body {
+		width: 320px;
+	}
+	.row {
+		padding-left: 2px;
+	}
+	.form-control{
+		width: 80px;
+		display: inline;
+	}
+	#accounts-container {
+		list-style: none;
+		margin: 0px;
+		padding: 0px;
+	}
+	</style>
+</head>
+<body ng-app="App">
+	<div ng-controller="MainController" class="container">
+		<div class="row">
+			<form ng-submit="addAccount()">
+			  <input type="text" required placeholder="account" ng-model="newAccount" class="form-control input-sm">
+			  <input type="text" required placeholder="username" ng-model="newUsername" class="form-control input-sm">
+			  <input type="password" required placeholder="password" ng-model="newPassword" class="form-control input-sm">
+			  <button type="submit" class="btn btn-default btn-sm">追加</button>
+			</form>
+		</div>
+		<div class="row">
+			<table id="accounts-container" class="table">
+				<tr ng-repeat="account in accounts">
+					<td>{{account.account}} / {{account.username}}</td>
+					<td>
+						<button ng-click="applyAccount(account)" class="btn btn-info btn-sm">適用</button>
+						<button ng-click="removeAccount(account)" class="btn btn-warning btn-sm">削除</button>
+					</td>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="angular.min.js"></script>
+	<script type="text/javascript" src="popup.js"></script>
+</body>
+</html>
