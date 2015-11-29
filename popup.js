@@ -1,3 +1,28 @@
+"use strict";
+
+class ChromeStorage {
+	static get(key){
+		return new Promise(
+			function(resolve, reject){
+				chrome.storage.local.get(key, function(result){
+					resolve(result);
+				});
+			}
+		);
+	}
+
+	static set(obj){
+		return new Promise(
+			function(resolve, reject){
+				chrome.storage.local.set(obj, function(){
+					resolve();
+				});
+			}
+		);
+	}
+}
+
+
 angular.module('App', [])
 .controller('MainController', ['$scope', '$timeout', '$filter', function($scope, $timeout, $filter) {
 	$scope.accounts = [];
@@ -16,24 +41,30 @@ angular.module('App', [])
 	  	alert('This account has registed');
 	  	return;
 	  }
-		chrome.storage.local.get("accounts", function(result){
-			var accounts = result.accounts || [];
+	  ChromeStorage.get("accounts")
+	  .then(function(result){
+	  	var accounts = result.accounts || [];
 			accounts.push(newAccount);
 
-			$scope.saveAccount(accounts);
-		});
+			return $scope.saveAccount(accounts);
+	  });
 	};
 
 	$scope.saveAccount = function(accounts){
-		chrome.storage.local.set({"accounts": accounts}, function(){
-			$scope.loadAccounts();
+		return ChromeStorage.set({"accounts": accounts})
+		.then(function(){
+			return $scope.loadAccounts();
 		});
 	}
 
 	$scope.loadAccounts = function(){
-		chrome.storage.local.get("accounts", function(result){
-			$timeout(function(){
-				$scope.accounts = result.accounts;
+		return ChromeStorage.get("accounts")
+		.then(function(result){
+			return new Promise(function(resolve, reject){
+				$timeout(function(){
+					$scope.accounts = result.accounts;
+					resolve();
+				});
 			});
 		});
 	}
@@ -42,7 +73,7 @@ angular.module('App', [])
 		var accounts = $filter('filter')($scope.accounts, function (account) {
 	    return account !== targetAccount;
 	  });
-		$scope.saveAccount(accounts);
+		return $scope.saveAccount(accounts);
 	};
 
 	$scope.applyAccount = function(account){
@@ -50,5 +81,5 @@ angular.module('App', [])
 		bg.applyAccount(account);
 	}
 
-	$scope.loadAccounts();
+	return $scope.loadAccounts();
 }]);
