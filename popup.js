@@ -47,6 +47,10 @@ angular.module('App', [])
 			accounts.push(newAccount);
 
 			return $scope.saveAccount(accounts);
+	  })
+	  .then(function(){
+	  	$scope.newUsername = ''
+	  	$scope.newPassword = ''
 	  });
 	};
 
