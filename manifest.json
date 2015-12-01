@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "AWS Account Switch",
   "description": "switch aws account",
-  "version": "0.0.1",
+  "version": "0.0.2",
 
   "permissions": [
     "storage",
